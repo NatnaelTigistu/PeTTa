@@ -767,12 +767,12 @@ translate_expr([H0|T0], Expectation, Goals, Out) :-
                                           append(GsH, [(ConjA, GA, (Av == true -> Out = true ; (ConjB, GB, Out = Bv)))], Goals)
         %--- Unification constructs ---:
         ; special_builtin_form(HV, T, let_bind), T = [Pat, Val, In]
-          -> translate_expr(Pat, Gp, Pv),
+          -> translate_pattern(Pat, Pv),
                                                            translate_let_value(Pat, Val, In, Gv, V),
                                                            note_candidates(Pv, V),        %the bound variable gets the value's type
                                                            bind_pattern_from(Pat, V),     %destructuring patterns type their fields
                                                            translate_expr(In, Expectation, Gi, Out),
-                                                           append([GsH,[(Pv=V)],Gp,Gv,Gi], Goals)
+                                                           append([GsH, Gv, [(Pv=V)], Gi], Goals)
         ; special_builtin_form(HV, T, let_star), T = [Binds, Body]
           -> letstar_to_rec_let(Binds,Body,RecLet),
                                              translate_expr(RecLet, Expectation, Goals, Out)
